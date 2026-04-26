@@ -124,6 +124,20 @@ function makeId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+function getDeviceId() {
+  if (typeof window === 'undefined') return 'server';
+
+  const storageKey = 'viberoom-device-id';
+  let deviceId = window.localStorage.getItem(storageKey);
+
+  if (!deviceId) {
+    deviceId = Math.random().toString(36).slice(2, 10);
+    window.localStorage.setItem(storageKey, deviceId);
+  }
+
+  return deviceId;
+}
+
 function FloatingReaction({ emoji, index }) {
   return (
     <motion.div
@@ -605,7 +619,9 @@ function RoomScreen({ room, user, onLeave }) {
       try {
         setConnectionError('');
         const roomName = encodeURIComponent(String(room.id));
-        const username = encodeURIComponent(user.name);
+        // make username unique per device to avoid disconnects, but keep it stable on refresh
+        const uniqueName = `${user.name}-${getDeviceId()}`;
+        const username = encodeURIComponent(uniqueName);
         const res = await fetch(`/api/token?room=${roomName}&username=${username}`);
         const data = await res.json();
 
