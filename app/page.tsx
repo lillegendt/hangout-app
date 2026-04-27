@@ -613,6 +613,18 @@ function ParticipantTile({ name, speaking, muted, cameraOff, gradient, isHost })
 function RoomScreen({ room, user, onLeave }) {
   const [token, setToken] = useState(null);
   const [connectionError, setConnectionError] = useState('');
+  const [handRaised, setHandRaised] = useState(false);
+  const [roomLocked, setRoomLocked] = useState(false);
+  const [liveMessage, setLiveMessage] = useState('');
+  const [liveMessages, setLiveMessages] = useState([
+    { id: 'welcome', user: 'System', text: 'Welcome to the live room 💜' },
+  ]);
+
+  const sendLiveMessage = () => {
+    if (!liveMessage.trim()) return;
+    setLiveMessages((prev) => [...prev, { id: makeId(), user: user.name, text: liveMessage.trim() }]);
+    setLiveMessage('');
+  };
 
   React.useEffect(() => {
     const getToken = async () => {
@@ -666,10 +678,72 @@ function RoomScreen({ room, user, onLeave }) {
           if (reason) setConnectionError(`Disconnected: ${String(reason)}`);
         }}
       >
-        <VideoConference />
-        <button onClick={onLeave} className="absolute top-4 left-4 bg-red-500 text-white px-4 py-2 rounded">
-          Leave
-        </button>
+        <div className="h-full w-full overflow-y-auto snap-y snap-mandatory bg-[#09090f] p-3 pb-56
+          [&_.lk-video-conference]:min-h-full [&_.lk-video-conference]:grid [&_.lk-video-conference]:grid-cols-2 lg:[&_.lk-video-conference]:grid-cols-4 [&_.lk-video-conference]:gap-3
+          [&_.lk-participant-tile]:relative [&_.lk-participant-tile]:snap-start [&_.lk-participant-tile]:min-h-[34vh] lg:[&_.lk-participant-tile]:min-h-[28vh]
+          [&_.lk-participant-tile:first-child]:col-span-2 lg:[&_.lk-participant-tile:first-child]:col-span-4 [&_.lk-participant-tile:first-child]:min-h-[62vh]
+          [&_.lk-participant-tile]:overflow-hidden [&_.lk-participant-tile]:rounded-[32px] [&_.lk-participant-tile]:border [&_.lk-participant-tile]:border-white/10 [&_.lk-participant-tile]:bg-black [&_.lk-participant-tile]:shadow-2xl [&_.lk-participant-tile]:transition-all [&_.lk-participant-tile]:duration-300 [&_.lk-participant-tile]:ease-out
+          [&_.lk-participant-tile:hover]:scale-[1.01] [&_.lk-participant-tile:hover]:border-white/30
+          [&_.lk-participant-tile.lk-speaking]:border-emerald-300/90 [&_.lk-participant-tile.lk-speaking]:shadow-[0_0_36px_rgba(52,211,153,0.55)]
+          [&_.lk-participant-tile.lk-local-participant]:border-fuchsia-300/90 [&_.lk-participant-tile.lk-local-participant]:shadow-[0_0_30px_rgba(217,70,239,0.45)]
+          [&_.lk-participant-tile_video]:h-full [&_.lk-participant-tile_video]:w-full [&_.lk-participant-tile_video]:object-cover
+          [&_.lk-participant-name]:absolute [&_.lk-participant-name]:left-4 [&_.lk-participant-name]:bottom-4 [&_.lk-participant-name]:rounded-full [&_.lk-participant-name]:bg-black/70 [&_.lk-participant-name]:px-3 [&_.lk-participant-name]:py-1.5 [&_.lk-participant-name]:text-sm [&_.lk-participant-name]:font-bold [&_.lk-participant-name]:text-white [&_.lk-participant-name]:backdrop-blur-md
+          [&_.lk-control-bar]:fixed [&_.lk-control-bar]:bottom-20 [&_.lk-control-bar]:left-1/2 [&_.lk-control-bar]:z-50 [&_.lk-control-bar]:-translate-x-1/2 [&_.lk-control-bar]:rounded-full [&_.lk-control-bar]:border [&_.lk-control-bar]:border-white/10 [&_.lk-control-bar]:bg-black/65 [&_.lk-control-bar]:px-4 [&_.lk-control-bar]:py-3 [&_.lk-control-bar]:backdrop-blur-xl
+          [&_.lk-chat]:hidden [&_.lk-chat-toggle]:hidden [&_[aria-label='Chat']]:hidden [&_[title='Chat']]:hidden
+        ">
+          <VideoConference />
+        </div>
+
+        <div className="pointer-events-none absolute inset-x-0 top-4 z-50 flex items-center justify-between px-4">
+          <button onClick={onLeave} className="pointer-events-auto rounded-full bg-red-500 px-4 py-2 text-sm font-bold text-white shadow-lg">
+            Leave
+          </button>
+          <div className="rounded-full border border-white/10 bg-black/60 px-4 py-2 text-sm font-bold text-white backdrop-blur-xl">
+            <Icon name="crown" className="mr-2 h-4 w-4 text-xs" /> Host: {room?.host || 'Host'}
+          </div>
+        </div>
+
+        <div className="absolute bottom-44 right-4 z-50 flex flex-col gap-2">
+          <button
+            onClick={() => setHandRaised(!handRaised)}
+            className={`rounded-full px-4 py-3 text-sm font-bold shadow-lg backdrop-blur-xl ${handRaised ? 'bg-amber-400 text-black' : 'bg-black/60 text-white'}`}
+          >
+            ✋ {handRaised ? 'Hand raised' : 'Raise hand'}
+          </button>
+          <button
+            onClick={() => setRoomLocked(!roomLocked)}
+            className={`rounded-full px-4 py-3 text-sm font-bold shadow-lg backdrop-blur-xl ${roomLocked ? 'bg-rose-500 text-white' : 'bg-black/60 text-white'}`}
+          >
+            {roomLocked ? '🔒 Locked' : '🔓 Lock room'}
+          </button>
+        </div>
+
+        <div className="fixed inset-x-0 bottom-0 z-[999] border-t border-white/10 bg-[#09090f]/95 p-3 text-white shadow-2xl backdrop-blur-2xl">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-2 flex items-center justify-between">
+              <div className="text-sm font-bold">Live chat</div>
+              <div className="text-xs text-white/45">Pinned bottom chat</div>
+            </div>
+            <div className="mb-2 flex max-h-24 flex-col-reverse gap-1 overflow-y-auto pr-1">
+              {[...liveMessages].slice(-6).reverse().map((item) => (
+                <div key={item.id} className="rounded-2xl bg-white/10 px-3 py-1.5 text-xs">
+                  <span className="font-bold text-white">{item.user}: </span>
+                  <span className="text-white/75">{item.text}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                value={liveMessage}
+                onChange={(e) => setLiveMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && sendLiveMessage()}
+                placeholder="Say something..."
+                className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/40"
+              />
+              <button onClick={sendLiveMessage} className="rounded-full bg-white px-4 py-3 text-sm font-bold text-black">Send</button>
+            </div>
+          </div>
+        </div>
       </LiveKitRoom>
     </div>
   );
@@ -801,30 +875,4 @@ export default function App() {
             <CreateRoomModal open={createOpen} onClose={() => setCreateOpen(false)} onCreate={createRoom} />
 
             <div className="absolute inset-x-4 bottom-5 z-30 rounded-[28px] border border-white/10 bg-black/35 p-2 backdrop-blur-2xl">
-              <div className="flex items-center gap-2">
-                <NavItem label="Home" active={tab === 'home'} onClick={() => setTab('home')} icon={<Icon name="sparkles" />} />
-                <NavItem label="Friends" active={tab === 'friends'} onClick={() => setTab('friends')} icon={<Icon name="heart" />} />
-                <button
-                  onClick={() => setCreateOpen(true)}
-                  className="-mt-8 flex h-16 w-16 items-center justify-center rounded-full bg-white text-2xl text-black shadow-2xl"
-                  aria-label="Create room"
-                >
-                  <Icon name="plus" className="h-6 w-6 text-2xl" />
-                </button>
-                <NavItem label="Alerts" active={tab === 'notifications'} onClick={() => setTab('notifications')} icon={<Icon name="bell" />} />
-                <NavItem label="Profile" active={tab === 'profile'} onClick={() => setTab('profile')} icon={<Icon name="users" />} />
-              </div>
-            </div>
-          </>
-        ) : (
-          <RoomScreen room={room} user={user} onLeave={() => {
-              setInRoom(false);
-              if (typeof window !== 'undefined') {
-                window.history.pushState({}, '', '/');
-              }
-            }} />
-        )}
-      </div>
-    </div>
-  );
-}
+ 
