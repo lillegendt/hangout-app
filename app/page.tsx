@@ -760,7 +760,7 @@ function RoomScreen({ room, user, onLeave }) {
 
         <div className="fixed inset-x-0 bottom-36 z-[1100] flex justify-center px-3">
           <div className="rounded-full border border-white/10 bg-black/75 px-3 py-2 shadow-2xl backdrop-blur-2xl">
-            <ControlBar controls={{ chat: false, settings: false }} />
+            <ControlBar controls={{ chat: false, settings: false, screenShare: true }} />
           </div>
         </div>
 
