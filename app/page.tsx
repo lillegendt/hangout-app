@@ -740,16 +740,18 @@ function RoomScreen({ room, user, onLeave }) {
           if (reason) setConnectionError(`Disconnected: ${String(reason)}`);
         }}
       >
-        <div className="h-[calc(100vh-210px)] w-full overflow-hidden bg-[#09090f] p-2 sm:p-3
+        <div className="h-[58dvh] sm:h-[calc(100dvh-190px)] w-full overflow-hidden bg-[#09090f] p-2 sm:p-3
           [&_.lk-video-conference]:h-full [&_.lk-video-conference]:w-full [&_.lk-video-conference]:overflow-hidden
-          [&_.lk-grid-layout]:h-full [&_.lk-grid-layout]:w-full [&_.lk-grid-layout]:grid [&_.lk-grid-layout]:auto-rows-fr [&_.lk-grid-layout]:gap-2
+          [&_.lk-video-conference_.lk-control-bar]:hidden
+          [&_.lk-grid-layout]:h-full [&_.lk-grid-layout]:w-full [&_.lk-grid-layout]:grid [&_.lk-grid-layout]:grid-cols-2 md:[&_.lk-grid-layout]:grid-cols-3 xl:[&_.lk-grid-layout]:grid-cols-4 [&_.lk-grid-layout]:auto-rows-fr [&_.lk-grid-layout]:gap-2
+          [&_.lk-grid-layout>*]:min-h-0 [&_.lk-grid-layout>*]:h-full
           [&_.lk-participant-tile]:relative [&_.lk-participant-tile]:min-h-0 [&_.lk-participant-tile]:h-full [&_.lk-participant-tile]:overflow-hidden [&_.lk-participant-tile]:rounded-2xl sm:[&_.lk-participant-tile]:rounded-[28px]
           [&_.lk-participant-tile]:border [&_.lk-participant-tile]:border-white/10 [&_.lk-participant-tile]:bg-black [&_.lk-participant-tile]:shadow-xl [&_.lk-participant-tile]:transition-all [&_.lk-participant-tile]:duration-300 [&_.lk-participant-tile]:ease-out
           [&_.lk-participant-tile:hover]:scale-[1.005] [&_.lk-participant-tile:hover]:border-white/30
           [&_.lk-participant-tile.lk-speaking]:border-emerald-300/90 [&_.lk-participant-tile.lk-speaking]:shadow-[0_0_28px_rgba(52,211,153,0.45)]
           [&_.lk-participant-tile.lk-local-participant]:border-fuchsia-300/90 [&_.lk-participant-tile.lk-local-participant]:shadow-[0_0_24px_rgba(217,70,239,0.38)]
           [&_.lk-participant-tile_video]:h-full [&_.lk-participant-tile_video]:w-full [&_.lk-participant-tile_video]:object-cover
-          [&_.lk-participant-name]:absolute [&_.lk-participant-name]:left-2 sm:[&_.lk-participant-name]:left-4 [&_.lk-participant-name]:bottom-2 sm:[&_.lk-participant-name]:bottom-4 [&_.lk-participant-name]:rounded-full [&_.lk-participant-name]:bg-black/70 [&_.lk-participant-name]:px-2 sm:[&_.lk-participant-name]:px-3 [&_.lk-participant-name]:py-1 [&_.lk-participant-name]:text-[10px] sm:[&_.lk-participant-name]:text-sm [&_.lk-participant-name]:font-bold [&_.lk-participant-name]:text-white [&_.lk-participant-name]:backdrop-blur-md
+          [&_.lk-participant-name]:absolute [&_.lk-participant-name]:left-2 sm:[&_.lk-participant-name]:left-4 [&_.lk-participant-name]:bottom-2 sm:[&_.lk-participant-name]:bottom-4 [&_.lk-participant-name]:max-w-[85%] [&_.lk-participant-name]:truncate [&_.lk-participant-name]:rounded-full [&_.lk-participant-name]:bg-black/70 [&_.lk-participant-name]:px-2 sm:[&_.lk-participant-name]:px-3 [&_.lk-participant-name]:py-1 [&_.lk-participant-name]:text-[10px] sm:[&_.lk-participant-name]:text-sm [&_.lk-participant-name]:font-bold [&_.lk-participant-name]:text-white [&_.lk-participant-name]:backdrop-blur-md
           [&_.lk-control-bar]:hidden
           [&_.lk-chat]:hidden [&_.lk-chat-toggle]:hidden [&_[aria-label='Chat']]:hidden [&_[title='Chat']]:hidden
         ">
