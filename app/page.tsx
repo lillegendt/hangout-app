@@ -654,6 +654,80 @@ function LiveChatDock({ user }) {
   };
 
   return (
+    <div className="fixed inset-x-0 bottom-0 z-[900] border-t border-white/10 bg-[#09090f]/95 p-2 text-white shadow-2xl backdrop-blur-2xl">
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-2 flex items-center justify-between">
+          <div className="text-sm font-bold">Live chat</div>
+          <div className="text-xs text-white/45">Everyone can see this</div>
+        </div>
+        <div className="mb-2 flex max-h-16 flex-col-reverse gap-1 overflow-y-auto pr-1">
+          {[...messages].slice(-6).reverse().map((item) => (
+            <div key={item.id} className="rounded-2xl bg-white/10 px-3 py-1.5 text-xs">
+              <span className="font-bold text-white">{item.user}: </span>
+              <span className="text-white/75">{item.text}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+            placeholder="Say something..."
+            className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/40"
+          />
+          <button onClick={sendMessage} className="rounded-full bg-white px-4 py-3 text-sm font-bold text-black">Send</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RoomScreen({ room, user, onLeave }) {
+  const [token, setToken] = useState(null);
+  const [connectionError, setConnectionError] = useState('');
+  const [handRaised, setHandRaised] = useState(false);
+  const [roomLocked, setRoomLocked] = useState(false);
+
+  React.useEffect(() => {
+    const getToken = async () => {
+      try {
+        setConnectionError('');
+        const roomName = encodeURIComponent(String(room.id));
+        const uniqueName = `${user.name}-${getDeviceId()}`;
+        const username = encodeURIComponent(uniqueName);
+        const res = await fetch(`/api/token?room=${roomName}&username=${username}`);
+        const data = await res.json();
+
+        if (!res.ok || !data.token) {
+          throw new Error(data.error || 'Token request failed');
+        }
+
+        setToken(data.token);
+      } catch (error) {
+        setConnectionError(error.message || 'Could not create LiveKit token');
+      }
+    };
+    getToken();
+  }, [room, user]);
+
+  const livekitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL || 'wss://viberoom-73ru744t.livekit.cloud';
+
+  if (connectionError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#09090f] p-6 text-center text-white">
+        <div className="mb-3 text-2xl font-bold">Connection error</div>
+        <div className="mb-5 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-sm text-red-100">{connectionError}</div>
+        <Button onClick={onLeave} className="rounded-full bg-white text-black hover:bg-white/90">Go back</Button>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return <div className="flex min-h-screen items-center justify-center bg-[#09090f] p-10 text-white">Connecting...</div>;
+  }
+
+  return (
     <div className="h-screen bg-[#09090f]">
       <LiveKitRoom
         token={token}
