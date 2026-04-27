@@ -844,4 +844,30 @@ export default function App() {
             <CreateRoomModal open={createOpen} onClose={() => setCreateOpen(false)} onCreate={createRoom} />
 
             <div className="absolute inset-x-4 bottom-5 z-30 rounded-[28px] border border-white/10 bg-black/35 p-2 backdrop-blur-2xl">
- 
+              <div className="flex items-center gap-2">
+                <NavItem label="Home" active={tab === 'home'} onClick={() => setTab('home')} icon={<Icon name="sparkles" />} />
+                <NavItem label="Friends" active={tab === 'friends'} onClick={() => setTab('friends')} icon={<Icon name="heart" />} />
+                <button
+                  onClick={() => setCreateOpen(true)}
+                  className="-mt-8 flex h-16 w-16 items-center justify-center rounded-full bg-white text-2xl text-black shadow-2xl"
+                  aria-label="Create room"
+                >
+                  <Icon name="plus" className="h-6 w-6 text-2xl" />
+                </button>
+                <NavItem label="Alerts" active={tab === 'notifications'} onClick={() => setTab('notifications')} icon={<Icon name="bell" />} />
+                <NavItem label="Profile" active={tab === 'profile'} onClick={() => setTab('profile')} icon={<Icon name="users" />} />
+              </div>
+            </div>
+          </>
+        ) : (
+          <RoomScreen room={room} user={user} onLeave={() => {
+            setInRoom(false);
+            if (typeof window !== 'undefined') {
+              window.history.pushState({}, '', '/');
+            }
+          }} />
+        )}
+      </div>
+    </div>
+  );
+}
