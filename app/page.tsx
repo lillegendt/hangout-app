@@ -653,7 +653,66 @@ function LiveChatDock({ user }) {
     await room.localParticipant.publishData(payload, { reliable: true, topic: 'chat' });
   };
 
-  return (        <LiveChatDock user={user} />
+  return (
+    <div className="h-screen bg-[#09090f]">
+      <LiveKitRoom
+        token={token}
+        serverUrl={livekitUrl}
+        connect={true}
+        video={true}
+        audio={true}
+        onError={(error) => setConnectionError(error.message || 'LiveKit connection failed')}
+        onDisconnected={(reason) => {
+          if (reason) setConnectionError(`Disconnected: ${String(reason)}`);
+        }}
+      >
+        <div className="h-full w-full overflow-y-auto snap-y snap-mandatory bg-[#09090f] p-3 pb-56
+          [&_.lk-video-conference]:min-h-full [&_.lk-video-conference]:grid [&_.lk-video-conference]:grid-cols-2 lg:[&_.lk-video-conference]:grid-cols-4 [&_.lk-video-conference]:gap-3
+          [&_.lk-participant-tile]:relative [&_.lk-participant-tile]:snap-start [&_.lk-participant-tile]:min-h-[34vh] lg:[&_.lk-participant-tile]:min-h-[28vh]
+          [&_.lk-participant-tile:first-child]:col-span-2 lg:[&_.lk-participant-tile:first-child]:col-span-4 [&_.lk-participant-tile:first-child]:min-h-[62vh]
+          [&_.lk-participant-tile]:overflow-hidden [&_.lk-participant-tile]:rounded-[32px] [&_.lk-participant-tile]:border [&_.lk-participant-tile]:border-white/10 [&_.lk-participant-tile]:bg-black [&_.lk-participant-tile]:shadow-2xl [&_.lk-participant-tile]:transition-all [&_.lk-participant-tile]:duration-300 [&_.lk-participant-tile]:ease-out
+          [&_.lk-participant-tile:hover]:scale-[1.01] [&_.lk-participant-tile:hover]:border-white/30
+          [&_.lk-participant-tile.lk-speaking]:border-emerald-300/90 [&_.lk-participant-tile.lk-speaking]:shadow-[0_0_36px_rgba(52,211,153,0.55)]
+          [&_.lk-participant-tile.lk-local-participant]:border-fuchsia-300/90 [&_.lk-participant-tile.lk-local-participant]:shadow-[0_0_30px_rgba(217,70,239,0.45)]
+          [&_.lk-participant-tile_video]:h-full [&_.lk-participant-tile_video]:w-full [&_.lk-participant-tile_video]:object-cover
+          [&_.lk-participant-name]:absolute [&_.lk-participant-name]:left-4 [&_.lk-participant-name]:bottom-4 [&_.lk-participant-name]:rounded-full [&_.lk-participant-name]:bg-black/70 [&_.lk-participant-name]:px-3 [&_.lk-participant-name]:py-1.5 [&_.lk-participant-name]:text-sm [&_.lk-participant-name]:font-bold [&_.lk-participant-name]:text-white [&_.lk-participant-name]:backdrop-blur-md
+          [&_.lk-control-bar]:hidden
+          [&_.lk-chat]:hidden [&_.lk-chat-toggle]:hidden [&_[aria-label='Chat']]:hidden [&_[title='Chat']]:hidden
+        ">
+          <VideoConference />
+        </div>
+
+        <div className="fixed inset-x-0 bottom-36 z-[1100] flex justify-center px-3">
+          <div className="rounded-full border border-white/10 bg-black/75 px-3 py-2 shadow-2xl backdrop-blur-2xl">
+            <ControlBar controls={{ chat: false, settings: false }} />
+          </div>
+        </div>
+
+        <div className="pointer-events-none absolute inset-x-0 top-4 z-50 flex items-center justify-between px-4">
+          <button onClick={onLeave} className="pointer-events-auto rounded-full bg-red-500 px-4 py-2 text-sm font-bold text-white shadow-lg">
+            Leave
+          </button>
+          <div className="rounded-full border border-white/10 bg-black/60 px-4 py-2 text-sm font-bold text-white backdrop-blur-xl">
+            <Icon name="crown" className="mr-2 h-4 w-4 text-xs" /> Host: {room?.host || 'Host'}
+          </div>
+        </div>
+
+        <div className="absolute bottom-44 right-4 z-50 flex flex-col gap-2">
+          <button
+            onClick={() => setHandRaised(!handRaised)}
+            className={`rounded-full px-4 py-3 text-sm font-bold shadow-lg backdrop-blur-xl ${handRaised ? 'bg-amber-400 text-black' : 'bg-black/60 text-white'}`}
+          >
+            ✋ {handRaised ? 'Hand raised' : 'Raise hand'}
+          </button>
+          <button
+            onClick={() => setRoomLocked(!roomLocked)}
+            className={`rounded-full px-4 py-3 text-sm font-bold shadow-lg backdrop-blur-xl ${roomLocked ? 'bg-rose-500 text-white' : 'bg-black/60 text-white'}`}
+          >
+            {roomLocked ? '🔒 Locked' : '🔓 Lock room'}
+          </button>
+        </div>
+
+        <LiveChatDock user={user} />
       </LiveKitRoom>
     </div>
   );
