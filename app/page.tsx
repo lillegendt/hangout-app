@@ -688,7 +688,7 @@ function RoomScreen({ room, user, onLeave }) {
           [&_.lk-participant-tile.lk-local-participant]:border-fuchsia-300/90 [&_.lk-participant-tile.lk-local-participant]:shadow-[0_0_30px_rgba(217,70,239,0.45)]
           [&_.lk-participant-tile_video]:h-full [&_.lk-participant-tile_video]:w-full [&_.lk-participant-tile_video]:object-cover
           [&_.lk-participant-name]:absolute [&_.lk-participant-name]:left-4 [&_.lk-participant-name]:bottom-4 [&_.lk-participant-name]:rounded-full [&_.lk-participant-name]:bg-black/70 [&_.lk-participant-name]:px-3 [&_.lk-participant-name]:py-1.5 [&_.lk-participant-name]:text-sm [&_.lk-participant-name]:font-bold [&_.lk-participant-name]:text-white [&_.lk-participant-name]:backdrop-blur-md
-          [&_.lk-control-bar]:fixed [&_.lk-control-bar]:bottom-20 [&_.lk-control-bar]:left-1/2 [&_.lk-control-bar]:z-50 [&_.lk-control-bar]:-translate-x-1/2 [&_.lk-control-bar]:rounded-full [&_.lk-control-bar]:border [&_.lk-control-bar]:border-white/10 [&_.lk-control-bar]:bg-black/65 [&_.lk-control-bar]:px-4 [&_.lk-control-bar]:py-3 [&_.lk-control-bar]:backdrop-blur-xl
+          [&_.lk-control-bar]:fixed [&_.lk-control-bar]:bottom-44 [&_.lk-control-bar]:left-1/2 [&_.lk-control-bar]:z-[1000] [&_.lk-control-bar]:-translate-x-1/2 [&_.lk-control-bar]:rounded-full [&_.lk-control-bar]:border [&_.lk-control-bar]:border-white/10 [&_.lk-control-bar]:bg-black/65 [&_.lk-control-bar]:px-4 [&_.lk-control-bar]:py-3 [&_.lk-control-bar]:backdrop-blur-xl
           [&_.lk-chat]:hidden [&_.lk-chat-toggle]:hidden [&_[aria-label='Chat']]:hidden [&_[title='Chat']]:hidden
         ">
           <VideoConference />
@@ -718,7 +718,7 @@ function RoomScreen({ room, user, onLeave }) {
           </button>
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-[999] border-t border-white/10 bg-[#09090f]/95 p-3 text-white shadow-2xl backdrop-blur-2xl">
+        <div className="fixed inset-x-0 bottom-0 z-[900] border-t border-white/10 bg-[#09090f]/95 p-2 text-white shadow-2xl backdrop-blur-2xl">
           <div className="mx-auto max-w-3xl">
             <div className="mb-2 flex items-center justify-between">
               <div className="text-sm font-bold">Live chat</div>
@@ -874,30 +874,5 @@ export default function App() {
 
             <CreateRoomModal open={createOpen} onClose={() => setCreateOpen(false)} onCreate={createRoom} />
 
-           <div className="absolute inset-x-4 bottom-5 z-30 rounded-[28px] border border-white/10 bg-black/35 p-2 backdrop-blur-2xl">
-  <div className="flex items-center gap-2">
-    <NavItem label="Home" active={tab === 'home'} onClick={() => setTab('home')} icon={<Icon name="sparkles" />} />
-    <NavItem label="Friends" active={tab === 'friends'} onClick={() => setTab('friends')} icon={<Icon name="heart" />} />
-    <button
-      onClick={() => setCreateOpen(true)}
-      className="-mt-8 flex h-16 w-16 items-center justify-center rounded-full bg-white text-2xl text-black shadow-2xl"
-    >
-      <Icon name="plus" className="h-6 w-6 text-2xl" />
-    </button>
-    <NavItem label="Alerts" active={tab === 'notifications'} onClick={() => setTab('notifications')} icon={<Icon name="bell" />} />
-    <NavItem label="Profile" active={tab === 'profile'} onClick={() => setTab('profile')} icon={<Icon name="users" />} />
-  </div>
-</div>
-          </>
-        ) : (
-          <RoomScreen room={room} user={user} onLeave={() => {
-            setInRoom(false);
-            if (typeof window !== 'undefined') {
-              window.history.pushState({}, '', '/');
-            }
-          }} />
-        )}
-      </div>
-    </div>
-  );
-}
+            <div className="absolute inset-x-4 bottom-5 z-30 rounded-[28px] border border-white/10 bg-black/35 p-2 backdrop-blur-2xl">
+ 
