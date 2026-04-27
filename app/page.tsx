@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { LiveKitRoom, VideoConference } from '@livekit/components-react';
+import { LiveKitRoom, VideoConference, ControlBar } from '@livekit/components-react';
 import '@livekit/components-styles';
 
 function Icon({ name, className = 'h-5 w-5' }) {
@@ -688,10 +688,16 @@ function RoomScreen({ room, user, onLeave }) {
           [&_.lk-participant-tile.lk-local-participant]:border-fuchsia-300/90 [&_.lk-participant-tile.lk-local-participant]:shadow-[0_0_30px_rgba(217,70,239,0.45)]
           [&_.lk-participant-tile_video]:h-full [&_.lk-participant-tile_video]:w-full [&_.lk-participant-tile_video]:object-cover
           [&_.lk-participant-name]:absolute [&_.lk-participant-name]:left-4 [&_.lk-participant-name]:bottom-4 [&_.lk-participant-name]:rounded-full [&_.lk-participant-name]:bg-black/70 [&_.lk-participant-name]:px-3 [&_.lk-participant-name]:py-1.5 [&_.lk-participant-name]:text-sm [&_.lk-participant-name]:font-bold [&_.lk-participant-name]:text-white [&_.lk-participant-name]:backdrop-blur-md
-          [&_.lk-control-bar]:fixed [&_.lk-control-bar]:bottom-44 [&_.lk-control-bar]:left-1/2 [&_.lk-control-bar]:z-[1000] [&_.lk-control-bar]:-translate-x-1/2 [&_.lk-control-bar]:rounded-full [&_.lk-control-bar]:border [&_.lk-control-bar]:border-white/10 [&_.lk-control-bar]:bg-black/65 [&_.lk-control-bar]:px-4 [&_.lk-control-bar]:py-3 [&_.lk-control-bar]:backdrop-blur-xl
+          [&_.lk-control-bar]:hidden
           [&_.lk-chat]:hidden [&_.lk-chat-toggle]:hidden [&_[aria-label='Chat']]:hidden [&_[title='Chat']]:hidden
         ">
           <VideoConference />
+        </div>
+
+        <div className="fixed inset-x-0 bottom-36 z-[1100] flex justify-center px-3">
+          <div className="rounded-full border border-white/10 bg-black/75 px-3 py-2 shadow-2xl backdrop-blur-2xl">
+            <ControlBar controls={{ chat: false, settings: false }} />
+          </div>
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 top-4 z-50 flex items-center justify-between px-4">
@@ -718,7 +724,7 @@ function RoomScreen({ room, user, onLeave }) {
           </button>
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-[900] border-t border-white/10 bg-[#09090f]/95 p-2 text-white shadow-2xl backdrop-blur-2xl">
+        <div className="fixed inset-x-0 bottom-0 z-[900] border-t border-white/10 bg-[#09090f]/95 p-2 text-white shadow-2xl backdrop-blur-2xl-0 bottom-0 z-[900] border-t border-white/10 bg-[#09090f]/95 p-3 text-white shadow-2xl backdrop-blur-2xl">
           <div className="mx-auto max-w-3xl">
             <div className="mb-2 flex items-center justify-between">
               <div className="text-sm font-bold">Live chat</div>
