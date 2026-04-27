@@ -712,7 +712,7 @@ function LiveChatDock({ user }) {
           </button>
         </div>
 
-        {/* <LiveChatDock user={user} /> */}
+        <LiveChatDock user={user} />
       </LiveKitRoom>
     </div>
   );
